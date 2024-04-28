@@ -1,5 +1,11 @@
-console.log("Hello, world!");
+import app from './src/app';
+import { config } from './src/config/config';
 
-function test() {
-    console.log("Hello, world!");
-}
+const startServer = () => {
+    const port = config.port || 3000;
+    app.listen(port, () => {
+        console.log(`Server listening on port ${port}`);
+    });
+};
+
+startServer();
