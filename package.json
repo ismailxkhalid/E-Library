@@ -1,39 +1,39 @@
 {
-  "name": "elib",
-  "version": "1.0.0",
-  "description": "This is E-Library api project Full stack",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "eBook",
-    "eLibrary",
-    "FullStack",
-    "Api"
-  ],
-  "author": "Ismail Khalid <ismailkhalidx@gmail.com>",
-  "license": "ISC",
-  "devDependencies": {
-    "@eslint/js": "^9.1.1",
-    "@types/dotenv": "^8.2.0",
-    "@types/express": "^4.17.21",
-    "@types/http-errors": "^2.0.4",
-    "@types/mongoose": "^5.11.97",
-    "@types/node": "^20.12.7",
-    "eslint": "^8.57.0",
-    "globals": "^15.0.0",
-    "nodemon": "^3.1.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.7.1"
-  },
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.7.1",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "http-errors": "^2.0.0",
-    "mongoose": "^8.3.2"
-  }
+    "name": "elib",
+    "version": "1.0.0",
+    "description": "This is E-Library api project Full stack",
+    "main": "server.js",
+    "scripts": {
+        "dev": "nodemon server.ts",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "eBook",
+        "eLibrary",
+        "FullStack",
+        "Api"
+    ],
+    "author": "Ismail Khalid <ismailkhalidx@gmail.com>",
+    "license": "ISC",
+    "devDependencies": {
+        "@eslint/js": "^9.1.1",
+        "@types/dotenv": "^8.2.0",
+        "@types/express": "^4.17.21",
+        "@types/http-errors": "^2.0.4",
+        "@types/mongoose": "^5.11.97",
+        "@types/node": "^20.12.7",
+        "eslint": "^8.57.0",
+        "globals": "^15.0.0",
+        "nodemon": "^3.1.0",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.5",
+        "typescript-eslint": "^7.7.1"
+    },
+    "dependencies": {
+        "@typescript-eslint/eslint-plugin": "^7.7.1",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "http-errors": "^2.0.0",
+        "mongoose": "^8.3.2"
+    }
 }
