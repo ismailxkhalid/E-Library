@@ -1,0 +1,24 @@
+{
+  "name": "elib",
+  "version": "1.0.0",
+  "description": "This is E-Library api project Full stack",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "eBook",
+    "eLibrary",
+    "FullStack",
+    "Api"
+  ],
+  "author": "Ismail Khalid <ismailkhalidx@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
