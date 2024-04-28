@@ -1,0 +1,35 @@
+{
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "extends": ["plugin:@eslint/recommended"],
+      "parserOptions": {
+        "ecmaVersion": 12
+      }
+    },
+    {
+      "files": ["*.ts"],
+      "extends": [
+        "plugin:@eslint/recommended",
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+      }
+    }
+  ],
+  "plugins": ["@eslint", "@typescript-eslint"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest", // Or use a specific version like 12
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@eslint/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {}
+}
