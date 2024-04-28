@@ -4,7 +4,7 @@
   "description": "This is E-Library api project Full stack",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.ts",
+    "dev": "nodemon server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
