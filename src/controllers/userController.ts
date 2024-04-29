@@ -101,7 +101,7 @@ export const userSignup = async (
         //Creating and Assigning Token
         const token = createToken(user._id.toString());
 
-        res.status(200).json({ email, token });
+        res.status(201).json({ email, token });
     } catch (error: any) {
         error = createHttpError(500, error.message);
         return next(error);
