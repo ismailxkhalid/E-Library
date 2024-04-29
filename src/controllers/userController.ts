@@ -103,6 +103,7 @@ export const userSignup = async (
 
         res.status(200).json({ email, token });
     } catch (error: any) {
-        res.status(400).json({ error: error.message });
+        error = createHttpError(500, error.message);
+        return next(error);
     }
 };
