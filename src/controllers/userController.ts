@@ -4,7 +4,8 @@ import bcrypt from 'bcrypt';
 import validator from 'validator';
 import { User } from '../models/userModel';
 import { config } from '../config/config';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import createHttpError from 'http-errors';
 
 const createToken = (_id: string) => {
     return jwt.sign({ _id }, config.secret as string, { expiresIn: '3d' });
@@ -56,31 +57,40 @@ export const userLogin = async (req: Request, res: Response) => {
 };
 
 // Signup Controller
-export const userSignup = async (req: Request, res: Response) => {
+export const userSignup = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const { name, email, password } = req.body;
     console.log(req.body);
 
     try {
         // Credentials Validation
         if (!name || !email || !password) {
-            console.log(name, email, password);
-            throw new Error(
+            const error = createHttpError(
+                400,
                 'All fields (Name, Email and Password) are required!'
             );
+            return next(error);
         }
         if (!validator.isEmail(email)) {
-            throw new Error('Email is not valid!');
+            const error = createHttpError(400, 'Invalid email format !');
+            return next(error);
         }
         if (!validator.isStrongPassword(password)) {
-            throw new Error(
-                'Password is not Strong. Use at least 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character !@#$%&*.'
+            const error = createHttpError(
+                400,
+                'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character !'
             );
+            return next(error);
         }
 
         const exists = await User.findOne({ email });
 
         if (exists) {
-            throw new Error('Email already in use !');
+            const error = createHttpError(400, 'Email already exists !');
+            return next(error);
         }
 
         const salt = await bcrypt.genSalt(12);
