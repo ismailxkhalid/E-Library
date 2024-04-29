@@ -1,15 +1,15 @@
 import express from 'express';
-import createHttpError from 'http-errors';
 import golbalErrorHandler from './middleware/golbalErrorHandler';
-import userRouter from './user/userRouter';
+import { userRouter } from './routes/userRoute';
 
 const app = express();
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.json({ message: 'E-Library for E-Books' });
 });
 
-app.use(userRouter);
+app.use('/api/users', userRouter);
 
 // Golabal Error Handler Middleware
 app.use(golbalErrorHandler);

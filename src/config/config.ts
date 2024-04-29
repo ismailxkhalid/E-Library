@@ -4,7 +4,8 @@ dotenvConfig();
 const _cofig = {
     port: process.env.PORT,
     db_url: process.env.MONGODB_URL,
-    env: process.env.NODE_ENV
+    env: process.env.NODE_ENV,
+    secret: process.env.JWT_SECRET
 };
 
 export const config = Object.freeze(_cofig);
