@@ -8,7 +8,10 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 const createToken = (_id: string) => {
-    return jwt.sign({ _id }, config.secret as string, { expiresIn: '3d' });
+    return jwt.sign({ sub: _id }, config.secret as string, {
+        expiresIn: '7d',
+        algorithm: 'HS256'
+    });
 };
 
 // GET ALL USERS
@@ -22,29 +25,40 @@ export const allUsers = async (req: Request, res: Response) => {
 };
 
 // Login Controller
-export const userLogin = async (req: Request, res: Response) => {
+export const userLogin = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const { email, password } = req.body;
     console.log(req.body);
 
     try {
         // Credentials Validation
         if (!email || !password) {
-            throw new Error('Both fields (Email and Password) are required!');
+            const error = createHttpError(
+                400,
+                'Please provide email and password'
+            );
+            return next(error);
         }
 
         const user = await User.findOne({ email });
         if (!user) {
-            throw new Error('Incorrect Email');
+            const error = createHttpError(401, 'Incorrect email');
+            return next(error);
         }
 
         // Ensure user.password is not null or undefined before comparing
         if (!user.password) {
-            throw new Error('User password is not set');
+            const error = createHttpError(401, 'User Password is not set');
+            return next(error);
         }
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-            throw new Error('Incorrect Password');
+            const error = createHttpError(401, 'Incorrect password');
+            return next(error);
         }
 
         //Creating and Assigning Token
