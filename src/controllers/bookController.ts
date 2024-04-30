@@ -7,6 +7,7 @@ const allBooks = async (req: Request, res: Response) => {
     try {
         const books = await Book.find({});
         res.send(books);
+        res.status(200);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
