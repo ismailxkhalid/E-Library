@@ -16,6 +16,7 @@ const allBooks = async (req: Request, res: Response) => {
 const createBook = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json({ message: 'Book Created' });
+        res.status(200);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
