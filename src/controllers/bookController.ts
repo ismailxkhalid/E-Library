@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { Book } from '../models/bookModel';
 import createHttpError from 'http-errors';
 import cloudinary from '../config/cloudinary';
+import { AuthRequest } from '../middleware/authenticate';
 
 // GET ALL BOOKS
 const allBooks = async (req: Request, res: Response) => {
@@ -39,8 +40,6 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
             }
         );
 
-        console.log('Book Cover Upload Result: ', bookCoverUploadResult);
-
         const bookPdfFileName = files.file[0].filename;
         const bookPdfFilePath = path.resolve(
             __dirname,
@@ -58,13 +57,11 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
                 format: 'pdf'
             }
         );
-
-        console.log('Book Pdf Upload Result: ', bookPdfUploadResult);
-
+        const _req = req as AuthRequest;
         // SAVE BOOK DETAILS TO DATABASE
         const newBook = await Book.create({
             title: req.body.title,
-            author: '662fcafc81cf3978f7b3a796', // HARDCODED AUTHOR ID (NEEDS TO BE DYNAMIC)
+            author: _req.userId,
             genre: req.body.genre,
             coverImage: bookCoverUploadResult.secure_url,
             file: bookPdfUploadResult.secure_url
