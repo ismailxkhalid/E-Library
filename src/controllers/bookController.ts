@@ -82,5 +82,94 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
         return next(createHttpError(500, errorMessage));
     }
 };
+// UPDATE BOOK
+const updateBook = async (req: Request, res: Response, next: NextFunction) => {
+    const { title, genre } = req.body;
+    const bookId = req.params.bookId;
+    // CHECK IF BOOK EXISTS
+    const book = await Book.findOne({ _id: bookId });
 
-export { allBooks, createBook };
+    // IF BOOK IS NOT FOUND, RETURN 404 ERROR
+    if (!book) {
+        return next(createHttpError(404, 'Book not found'));
+    }
+
+    // CHECK IF THE USER HAS ACCESS TO UPDATE THE BOOK
+    const _req = req as AuthRequest;
+    if (book.author.toString() !== _req.userId) {
+        return next(createHttpError(403, 'You can not update others book.'));
+    }
+
+    // CHECK IF THE COVER IMAGE FILE EXISTS IN THE REQUEST
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    let completeCoverImage = '';
+    if (files.coverImage) {
+        const bookCoverFileName = files.coverImage[0].filename;
+        const converMimeType = files.coverImage[0].mimetype.split('/').at(-1);
+        const bookCoverFilePath = path.resolve(
+            __dirname,
+            '../../public/data/uploads/' + bookCoverFileName
+        );
+        completeCoverImage = bookCoverFileName;
+        // UPLOAD COVER IMAGE TO CLOUDINARY
+
+        const uploadResult = await cloudinary.uploader.upload(
+            bookCoverFilePath,
+            {
+                filename_override: completeCoverImage,
+                folder: 'book-covers',
+                format: converMimeType
+            }
+        );
+
+        completeCoverImage = uploadResult.secure_url;
+        await fs.promises.unlink(bookCoverFilePath);
+    }
+
+    // CHECK IF THE PDF FILE FIELD EXISTS IN THE REQUEST
+    let completeFileName = '';
+    if (files.file) {
+        const bookPdfFilePath = path.resolve(
+            __dirname,
+            '../../public/data/uploads/' + files.file[0].filename
+        );
+
+        const bookPdfFileName = files.file[0].filename;
+        completeFileName = bookPdfFileName;
+
+        // UPLOAD BOOK FILE TO CLOUDINARY
+        const uploadResultPdf = await cloudinary.uploader.upload(
+            bookPdfFilePath,
+            {
+                resource_type: 'raw',
+                filename_override: completeFileName,
+                folder: 'book-covers',
+                format: 'pdf'
+            }
+        );
+
+        completeFileName = uploadResultPdf.secure_url;
+        await fs.promises.unlink(bookPdfFilePath);
+    }
+
+    // UPDATE BOOK DETAILS IN THE DATABASE
+    const updatedBook = await Book.findOneAndUpdate(
+        {
+            _id: bookId
+        },
+        {
+            title: title,
+            genre: genre,
+            coverImage: completeCoverImage
+                ? completeCoverImage
+                : book.coverImage,
+            file: completeFileName ? completeFileName : book.file
+        },
+        { new: true }
+    );
+
+    // RETURN THE UPDATED BOOK AS JSON RESPONSE
+    res.json(updatedBook);
+};
+
+export { allBooks, createBook, updateBook };

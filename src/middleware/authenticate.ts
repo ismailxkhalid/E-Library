@@ -14,7 +14,6 @@ const authenticate = async (
 ) => {
     const token = req.header('Authorization');
     if (!token) {
-        res.status(401).json({ error: 'Authorization token required' });
         return next(createHttpError(401, 'Authorization token required'));
     }
 
