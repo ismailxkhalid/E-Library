@@ -15,7 +15,7 @@ const upload = multer({
 });
 //Get All users
 router.get('/', allBooks);
-//Login Route
+// Create Book
 router.post(
     '/',
     authenticate,
@@ -25,7 +25,7 @@ router.post(
     ]),
     createBook
 );
-
+// Update Book
 router.patch(
     '/:bookId',
     authenticate,
