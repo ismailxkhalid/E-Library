@@ -117,17 +117,17 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
                 createHttpError(403, 'You can not delete others book.')
             );
         }
-        // DELETE BOOK FROM CLOUDINARY
 
-        const coverFileSplits = book.coverImage.split('/'); // get cover image public id
+        // DELETE BOOK FROM CLOUDINARY
+        const coverFileSplits = book.coverImage.split('/'); // get cover image public id and delete it on cloudinary
         const coverImagePublicId =
             coverFileSplits.at(-2) +
             '/' +
             coverFileSplits.at(-1)?.split('.').at(-2);
 
-        const pdfFileSplits = book.file.split('/');
+        const pdfFileSplits = book.file.split('/'); // get pdf file public id and delete it on cloudinary
         const pdfFilePublicId =
-            pdfFileSplits.at(-2) + '/' + pdfFileSplits.at(-1); // get pdf file public id
+            pdfFileSplits.at(-2) + '/' + pdfFileSplits.at(-1);
 
         await cloudinary.uploader.destroy(coverImagePublicId);
         await cloudinary.uploader.destroy(pdfFilePublicId, {
@@ -169,8 +169,8 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
             '../../public/data/uploads/' + bookCoverFileName
         );
         completeCoverImage = bookCoverFileName;
-        // UPLOAD COVER IMAGE TO CLOUDINARY
 
+        // UPLOAD COVER IMAGE TO CLOUDINARY
         const uploadResult = await cloudinary.uploader.upload(
             bookCoverFilePath,
             {
@@ -181,6 +181,16 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
         );
 
         completeCoverImage = uploadResult.secure_url;
+
+        // DELETE OLD BOOK COVER FROM CLOUDINARY
+        const coverFileSplits = book.coverImage.split('/'); // get cover image public id and delete it on cloudinary
+        const coverImagePublicId =
+            coverFileSplits.at(-2) +
+            '/' +
+            coverFileSplits.at(-1)?.split('.').at(-2);
+        await cloudinary.uploader.destroy(coverImagePublicId);
+
+        // DELETE TEMPORARY FILES FROM SERVER
         await fs.promises.unlink(bookCoverFilePath);
     }
 
@@ -207,6 +217,16 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
         );
 
         completeFileName = uploadResultPdf.secure_url;
+
+        // DELETE OLD BOOK PDF FROM CLOUDINARY
+        const pdfFileSplits = book.file.split('/'); // get pdf file public id and delete it on cloudinary
+        const pdfFilePublicId =
+            pdfFileSplits.at(-2) + '/' + pdfFileSplits.at(-1);
+        await cloudinary.uploader.destroy(pdfFilePublicId, {
+            resource_type: 'raw'
+        });
+
+        // DELETE TEMPORARY FILES FROM SERVER
         await fs.promises.unlink(bookPdfFilePath);
     }
 
