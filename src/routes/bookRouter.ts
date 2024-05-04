@@ -6,7 +6,7 @@ const router = express.Router();
 
 const upload = multer({
     dest: resolve(__dirname, '../../public/data/uploads'),
-    limits: { fileSize: 2 * 1024 * 1024 } // 2MB
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 //Get All users
 router.get('/', allBooks);

@@ -6,7 +6,9 @@ const _cofig = {
     db_url: process.env.MONGODB_URL,
     env: process.env.NODE_ENV,
     secret: process.env.JWT_SECRET,
-    cloudnary_cloud: '123'
+    cloudnary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    cloudnary_api_key: process.env.CLOUDINARY_API_KEY,
+    cloudnary_api_secret: process.env.CLOUDINARY_API_SECRET
 };
 
 export const config = Object.freeze(_cofig);
