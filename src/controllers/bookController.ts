@@ -101,6 +101,45 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
         return next(createHttpError(500, errorMessage));
     }
 };
+
+// DELETE BOOK
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+    const bookId = req.params.bookId;
+    try {
+        const book = await Book.findOne({ _id: bookId });
+        if (!book) {
+            return next(createHttpError(404, 'Book not found'));
+        }
+        // CHECK IF THE USER HAS ACCESS TO DELETE THE BOOK
+        const _req = req as AuthRequest;
+        if (book.author.toString() !== _req.userId) {
+            return next(
+                createHttpError(403, 'You can not delete others book.')
+            );
+        }
+        // DELETE BOOK FROM CLOUDINARY
+
+        const coverFileSplits = book.coverImage.split('/'); // get cover image public id
+        const coverImagePublicId =
+            coverFileSplits.at(-2) +
+            '/' +
+            coverFileSplits.at(-1)?.split('.').at(-2);
+
+        const pdfFileSplits = book.file.split('/');
+        const pdfFilePublicId =
+            pdfFileSplits.at(-2) + '/' + pdfFileSplits.at(-1); // get pdf file public id
+
+        await cloudinary.uploader.destroy(coverImagePublicId);
+        await cloudinary.uploader.destroy(pdfFilePublicId, {
+            resource_type: 'raw'
+        });
+        await Book.deleteOne({ _id: bookId });
+        return res.status(204);
+    } catch (error: any) {
+        return next(createHttpError(500, error.message));
+    }
+};
+
 // UPDATE BOOK
 const updateBook = async (req: Request, res: Response, next: NextFunction) => {
     const { title, genre } = req.body;
@@ -162,7 +201,7 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
             {
                 resource_type: 'raw',
                 filename_override: completeFileName,
-                folder: 'book-covers',
+                folder: 'book-pdfs',
                 format: 'pdf'
             }
         );
@@ -191,4 +230,4 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
     res.json(updatedBook);
 };
 
-export { allBooks, createBook, updateBook, getSinleBook };
+export { allBooks, createBook, updateBook, getSinleBook, deleteBook };

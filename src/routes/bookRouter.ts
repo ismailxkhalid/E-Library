@@ -5,14 +5,15 @@ import {
     allBooks,
     createBook,
     updateBook,
-    getSinleBook
+    getSinleBook,
+    deleteBook
 } from '../controllers/bookController';
 import authenticate from '../middleware/authenticate';
 const router = express.Router();
 
 const upload = multer({
     dest: resolve(__dirname, '../../public/data/uploads'),
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB file size limit
 });
 //Get All users
 router.get('/', allBooks);
@@ -30,6 +31,9 @@ router.post(
     ]),
     createBook
 );
+
+// Delete Book
+router.delete('/:bookId', authenticate, deleteBook);
 // Update Book
 router.patch(
     '/:bookId',
@@ -40,4 +44,5 @@ router.patch(
     ]),
     updateBook
 );
+
 export { router as bookRouter };
