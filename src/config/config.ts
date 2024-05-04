@@ -8,7 +8,8 @@ const _cofig = {
     secret: process.env.JWT_SECRET,
     cloudnary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     cloudnary_api_key: process.env.CLOUDINARY_API_KEY,
-    cloudnary_api_secret: process.env.CLOUDINARY_API_SECRET
+    cloudnary_api_secret: process.env.CLOUDINARY_API_SECRET,
+    frontendDomain: process.env.FRONTEND_DOMAIN
 };
 
 export const config = Object.freeze(_cofig);
