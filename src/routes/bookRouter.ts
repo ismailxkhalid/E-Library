@@ -4,7 +4,8 @@ import path, { resolve } from 'node:path';
 import {
     allBooks,
     createBook,
-    updateBook
+    updateBook,
+    getSinleBook
 } from '../controllers/bookController';
 import authenticate from '../middleware/authenticate';
 const router = express.Router();
@@ -15,6 +16,10 @@ const upload = multer({
 });
 //Get All users
 router.get('/', allBooks);
+
+// Get Single Book
+router.get('/:bookId', getSinleBook);
+
 // Create Book
 router.post(
     '/',

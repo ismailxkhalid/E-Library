@@ -7,13 +7,32 @@ import cloudinary from '../config/cloudinary';
 import { AuthRequest } from '../middleware/authenticate';
 
 // GET ALL BOOKS
-const allBooks = async (req: Request, res: Response) => {
+const allBooks = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // RETRIEVE ALL BOOKS FROM DATABASE
         const books = await Book.find({});
         res.send(books); // SEND BOOKS AS RESPONSE
     } catch (error: any) {
-        res.status(500).json({ error: error.message }); // HANDLE ERROR IF OCCURS
+        return next(createHttpError(500, error.message));
+    }
+};
+
+// GET SINGLE BOOK
+const getSinleBook = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const bookId = req.params.bookId;
+
+    try {
+        const book = await Book.findOne({ _id: bookId });
+        if (!book) {
+            return next(createHttpError(404, 'Book not found'));
+        }
+        return res.json(book);
+    } catch (error: any) {
+        return next(createHttpError(500, error.message));
     }
 };
 
@@ -172,4 +191,4 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
     res.json(updatedBook);
 };
 
-export { allBooks, createBook, updateBook };
+export { allBooks, createBook, updateBook, getSinleBook };
