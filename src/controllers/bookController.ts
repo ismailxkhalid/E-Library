@@ -10,8 +10,8 @@ import { AuthRequest } from '../middleware/authenticate';
 const allBooks = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // RETRIEVE ALL BOOKS FROM DATABASE
-        const books = await Book.find({});
-        res.send(books); // SEND BOOKS AS RESPONSE
+        const books = await Book.find().populate('author', 'name');
+        res.json(books); // SEND BOOKS AS RESPONSE
     } catch (error: any) {
         return next(createHttpError(500, error.message));
     }
@@ -26,7 +26,10 @@ const getSinleBook = async (
     const bookId = req.params.bookId;
 
     try {
-        const book = await Book.findOne({ _id: bookId });
+        const book = await Book.findOne({ _id: bookId }).populate(
+            'author',
+            'name'
+        );
         if (!book) {
             return next(createHttpError(404, 'Book not found'));
         }
@@ -96,9 +99,8 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
         await fs.promises.unlink(bookCoverFilePath);
         await fs.promises.unlink(bookPdfFilePath);
     } catch (error: any) {
-        const errorMessage: string = error.message;
         // FORWARD ERROR TO ERROR-HANDLING MIDDLEWARE
-        return next(createHttpError(500, errorMessage));
+        return next(createHttpError(500, error));
     }
 };
 
@@ -144,7 +146,7 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
 
 // UPDATE BOOK
 const updateBook = async (req: Request, res: Response, next: NextFunction) => {
-    const { title, genre } = req.body;
+    const { title, description, genre } = req.body;
     const bookId = req.params.bookId;
     // CHECK IF BOOK EXISTS
     const book = await Book.findOne({ _id: bookId });
@@ -239,7 +241,9 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
         },
         {
             title: title,
+            description: description,
             genre: genre,
+
             coverImage: completeCoverImage
                 ? completeCoverImage
                 : book.coverImage,
