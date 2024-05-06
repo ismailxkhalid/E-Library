@@ -1,4 +1,3 @@
-// controllers/userController.ts
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
@@ -7,6 +6,7 @@ import { config } from '../config/config';
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
+// SIGN TOKEN TO THE USER
 const createToken = (_id: string) => {
     return jwt.sign({ sub: _id }, config.secret as string, {
         expiresIn: '7d',
@@ -24,7 +24,7 @@ export const allUsers = async (req: Request, res: Response) => {
     }
 };
 
-// Login Controller
+// LOGIN USER
 export const userLogin = async (
     req: Request,
     res: Response,
@@ -70,7 +70,7 @@ export const userLogin = async (
     }
 };
 
-// Signup Controller
+// SIGNUP USER
 export const userSignup = async (
     req: Request,
     res: Response,

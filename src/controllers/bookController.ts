@@ -134,7 +134,9 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
             resource_type: 'raw'
         });
         await Book.deleteOne({ _id: bookId });
-        return res.status(204);
+        return res
+            .status(204)
+            .json({ message: 'Book deleted successfully ✅' });
     } catch (error: any) {
         return next(createHttpError(500, error.message));
     }
