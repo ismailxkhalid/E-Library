@@ -15,7 +15,7 @@ const upload = multer({
     dest: resolve(__dirname, '../../public/data/uploads'),
     limits: { fileSize: 10 * 1024 * 1024 } // 10MB file size limit
 });
-//Get All users
+//Get All Books
 router.get('/', allBooks);
 
 // Get Single Book
